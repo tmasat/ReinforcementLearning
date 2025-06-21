@@ -8,27 +8,28 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var maze = MazeGrid()
+    
     var body: some View {
         ZStack {
             // Full-screen background
             Color.black
                 .ignoresSafeArea()
             
-            // Placeholder content
-            VStack(spacing: 20) {
-                Image(systemName: "brain.head.profile")
-                    .imageScale(.large)
-                    .foregroundStyle(.white)
-                    .font(.system(size: 80))
-                
+            // Maze grid
+            VStack {
                 Text("Q-Learning Maze Solver")
-                    .font(.largeTitle)
+                    .font(.title2)
                     .fontWeight(.bold)
                     .foregroundStyle(.white)
+                    .padding(.top)
                 
-                Text("Coming soon...")
-                    .font(.title2)
-                    .foregroundStyle(.gray)
+                Spacer()
+                
+                MazeGridView(maze: maze, cellSize: 25)
+                    .padding()
+                
+                Spacer()
             }
         }
     }
