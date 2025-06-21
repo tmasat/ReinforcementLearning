@@ -27,6 +27,8 @@ class QLearningAgent: ObservableObject {
     @Published var episodeCount: Int = 0
     @Published var totalReward: Double = 0
     @Published var averageReward: Double = 0
+    @Published var pathHistory: [Position] = []
+    @Published var stepsInCurrentEpisode: Int = 0
     
     // Q-learning parameters
     var learningRate: Double = 0.1
@@ -39,6 +41,7 @@ class QLearningAgent: ObservableObject {
     init(maze: MazeGrid, startPosition: Position = Position(row: 1, col: 1)) {
         self.maze = maze
         self.currentPosition = startPosition
+        self.pathHistory = [startPosition]
         initializeQTable()
     }
     
@@ -64,6 +67,8 @@ class QLearningAgent: ObservableObject {
         episodeCount = 0
         totalReward = 0
         averageReward = 0
+        pathHistory = [currentPosition]
+        stepsInCurrentEpisode = 0
         initializeQTable()
     }
     
@@ -143,12 +148,21 @@ class QLearningAgent: ObservableObject {
         
         currentPosition = newPosition
         totalReward += reward
+        stepsInCurrentEpisode += 1
+        
+        // Add to path history (keep last 50 positions for trail effect)
+        pathHistory.append(currentPosition)
+        if pathHistory.count > 50 {
+            pathHistory.removeFirst()
+        }
         
         // Check if episode is complete (reached goal)
         if maze.getCellType(at: currentPosition) == .goal {
             episodeCount += 1
             averageReward = totalReward / Double(episodeCount)
             currentPosition = Position(row: 1, col: 1) // Reset to start
+            pathHistory = [currentPosition]
+            stepsInCurrentEpisode = 0
             return true
         }
         

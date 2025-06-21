@@ -28,6 +28,7 @@ struct MazeGridView: View {
                         let cellType = maze.grid[row][col]
                         let position = Position(row: row, col: col)
                         let isAgentHere = agentPosition == position
+                        let trailIndex = getTrailIndex(for: position)
                         
                         ZStack {
                             Rectangle()
@@ -44,6 +45,14 @@ struct MazeGridView: View {
                                     .fill(heatmapColor)
                                     .frame(width: cellSize, height: cellSize)
                                     .opacity(0.3)
+                            }
+                            
+                            // Path trail
+                            if let trailIndex = trailIndex {
+                                Circle()
+                                    .fill(Color.yellow)
+                                    .frame(width: cellSize * 0.3, height: cellSize * 0.3)
+                                    .opacity(0.3 + (0.4 * Double(trailIndex) / 50.0))
                             }
                             
                             // Agent visualization
@@ -75,6 +84,11 @@ struct MazeGridView: View {
             let t = (normalized - 0.5) * 2.0
             return Color(red: t, green: 1.0 - t, blue: 0.0)
         }
+    }
+    
+    private func getTrailIndex(for position: Position) -> Int? {
+        guard let agent = agent else { return nil }
+        return agent.pathHistory.firstIndex(of: position)
     }
 }
 
