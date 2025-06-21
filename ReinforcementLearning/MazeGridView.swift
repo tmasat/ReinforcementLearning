@@ -10,10 +10,12 @@ import SwiftUI
 struct MazeGridView: View {
     let maze: MazeGrid
     let cellSize: CGFloat
+    let agentPosition: Position?
     
-    init(maze: MazeGrid, cellSize: CGFloat = 30) {
+    init(maze: MazeGrid, cellSize: CGFloat = 30, agentPosition: Position? = nil) {
         self.maze = maze
         self.cellSize = cellSize
+        self.agentPosition = agentPosition
     }
     
     var body: some View {
@@ -22,11 +24,23 @@ struct MazeGridView: View {
                 HStack(spacing: 0) {
                     ForEach(0..<maze.cols, id: \.self) { col in
                         let cellType = maze.grid[row][col]
+                        let position = Position(row: row, col: col)
+                        let isAgentHere = agentPosition == position
                         
-                        Rectangle()
-                            .fill(cellType.color)
-                            .frame(width: cellSize, height: cellSize)
-                            .border(Color.white.opacity(0.1), width: 0.5)
+                        ZStack {
+                            Rectangle()
+                                .fill(cellType.color)
+                                .frame(width: cellSize, height: cellSize)
+                                .border(Color.white.opacity(0.1), width: 0.5)
+                            
+                            // Agent visualization
+                            if isAgentHere {
+                                Circle()
+                                    .fill(Color.red)
+                                    .frame(width: cellSize * 0.6, height: cellSize * 0.6)
+                                    .shadow(color: .red.opacity(0.5), radius: 4)
+                            }
+                        }
                     }
                 }
             }
@@ -36,6 +50,6 @@ struct MazeGridView: View {
 }
 
 #Preview {
-    MazeGridView(maze: MazeGrid())
+    MazeGridView(maze: MazeGrid(), agentPosition: Position(row: 1, col: 1))
         .background(Color.black)
 } 
