@@ -12,6 +12,7 @@ struct ContentView: View {
     @State private var agent: QLearningAgent
     @State private var timer: Timer?
     @State private var isRunning = false
+    @State private var showSettings = false
     
     init() {
         let maze = MazeGrid()
@@ -27,11 +28,30 @@ struct ContentView: View {
             
             // Maze grid with agent
             VStack {
-                Text("Q-Learning Maze Solver")
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .foregroundStyle(.white)
-                    .padding(.top)
+                HStack {
+                    Text("Q-Learning Maze Solver")
+                        .font(.title2)
+                        .fontWeight(.bold)
+                        .foregroundStyle(.white)
+                    
+                    Spacer()
+                    
+                    // Settings button
+                    Button(action: {
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            showSettings.toggle()
+                        }
+                    }) {
+                        Image(systemName: "slider.horizontal.3")
+                            .font(.title2)
+                            .foregroundStyle(.white)
+                            .padding(8)
+                            .background(Color.gray.opacity(0.3))
+                            .cornerRadius(8)
+                    }
+                }
+                .padding(.top)
+                .padding(.horizontal)
                 
                 // Enhanced stats display
                 VStack(spacing: 8) {
@@ -74,11 +94,15 @@ struct ContentView: View {
                         .font(.headline)
                         .foregroundStyle(.white)
                         .padding()
-                        .background(isRunning ? Color.red : Color.green)
+                        .frame(width: 200) // Sabit genişlik
+                        .background(isRunning ? Color.red : Color.blue)
                         .cornerRadius(10)
                 }
                 .padding(.bottom)
             }
+            
+            // Settings panel
+            SettingsPanel(isVisible: $showSettings, agent: agent)
         }
         .onDisappear {
             stopSimulation()
