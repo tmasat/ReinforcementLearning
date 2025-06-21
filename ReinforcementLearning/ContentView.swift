@@ -15,19 +15,19 @@ struct ContentView: View {
                 .ignoresSafeArea()
             
             // Placeholder content
-            VStack {
+            VStack(spacing: 20) {
                 Image(systemName: "brain.head.profile")
                     .imageScale(.large)
                     .foregroundStyle(.white)
-                    .font(.system(size: 60))
+                    .font(.system(size: 80))
                 
                 Text("Q-Learning Maze Solver")
-                    .font(.title)
+                    .font(.largeTitle)
                     .fontWeight(.bold)
                     .foregroundStyle(.white)
                 
                 Text("Coming soon...")
-                    .font(.subheadline)
+                    .font(.title2)
                     .foregroundStyle(.gray)
             }
         }
