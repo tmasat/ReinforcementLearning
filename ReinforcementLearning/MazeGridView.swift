@@ -11,11 +11,13 @@ struct MazeGridView: View {
     let maze: MazeGrid
     let cellSize: CGFloat
     let agentPosition: Position?
+    let agent: QLearningAgent?
     
-    init(maze: MazeGrid, cellSize: CGFloat = 30, agentPosition: Position? = nil) {
+    init(maze: MazeGrid, cellSize: CGFloat = 30, agentPosition: Position? = nil, agent: QLearningAgent? = nil) {
         self.maze = maze
         self.cellSize = cellSize
         self.agentPosition = agentPosition
+        self.agent = agent
     }
     
     var body: some View {
@@ -33,6 +35,17 @@ struct MazeGridView: View {
                                 .frame(width: cellSize, height: cellSize)
                                 .border(Color.white.opacity(0.1), width: 0.5)
                             
+                            // Q-value heatmap overlay
+                            if let agent = agent, maze.isValidPosition(position) && cellType != .goal {
+                                let maxQValue = agent.getMaxQValue(for: position)
+                                let heatmapColor = getHeatmapColor(for: maxQValue)
+                                
+                                Rectangle()
+                                    .fill(heatmapColor)
+                                    .frame(width: cellSize, height: cellSize)
+                                    .opacity(0.3)
+                            }
+                            
                             // Agent visualization
                             if isAgentHere {
                                 Circle()
@@ -46,6 +59,22 @@ struct MazeGridView: View {
             }
         }
         .background(Color.black)
+    }
+    
+    private func getHeatmapColor(for qValue: Double) -> Color {
+        // Normalize Q-value to 0-1 range (assuming max Q-value around 100)
+        let normalized = min(max(qValue / 100.0, 0.0), 1.0)
+        
+        // Create a gradient from blue (low values) to red (high values)
+        if normalized < 0.5 {
+            // Blue to green
+            let t = normalized * 2.0
+            return Color(red: 0.0, green: t, blue: 1.0 - t)
+        } else {
+            // Green to red
+            let t = (normalized - 0.5) * 2.0
+            return Color(red: t, green: 1.0 - t, blue: 0.0)
+        }
     }
 }
 

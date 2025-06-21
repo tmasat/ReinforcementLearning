@@ -33,23 +33,37 @@ struct ContentView: View {
                     .foregroundStyle(.white)
                     .padding(.top)
                 
-                // Stats display
-                HStack {
-                    Text("Episodes: \(agent.episodeCount)")
-                        .foregroundStyle(.white)
-                        .font(.caption)
+                // Enhanced stats display
+                VStack(spacing: 8) {
+                    HStack {
+                        Text("Episodes: \(agent.episodeCount)")
+                            .foregroundStyle(.white)
+                            .font(.caption)
+                        
+                        Spacer()
+                        
+                        Text("Total Reward: \(String(format: "%.1f", agent.totalReward))")
+                            .foregroundStyle(.white)
+                            .font(.caption)
+                    }
                     
-                    Spacer()
-                    
-                    Text("Reward: \(String(format: "%.1f", agent.totalReward))")
-                        .foregroundStyle(.white)
-                        .font(.caption)
+                    HStack {
+                        Text("Avg Reward: \(String(format: "%.2f", agent.averageReward))")
+                            .foregroundStyle(.white)
+                            .font(.caption)
+                        
+                        Spacer()
+                        
+                        Text("ε: \(String(format: "%.2f", agent.epsilon))")
+                            .foregroundStyle(.white)
+                            .font(.caption)
+                    }
                 }
                 .padding(.horizontal)
                 
                 Spacer()
                 
-                MazeGridView(maze: maze, cellSize: 25, agentPosition: agent.currentPosition)
+                MazeGridView(maze: maze, cellSize: 25, agentPosition: agent.currentPosition, agent: agent)
                     .padding()
                 
                 Spacer()
