@@ -57,7 +57,7 @@ struct ContentView: View {
                 
                 Spacer()
                 
-                MazeGridView(maze: maze, cellSize: 25, agentPosition: agent.currentPosition, agent: agent)
+                MazeGridView(maze: maze, cellSize: 25, agent: agent)
                     .padding()
                 
                 Spacer()

@@ -10,13 +10,11 @@ import SwiftUI
 struct MazeGridView: View {
     let maze: MazeGrid
     let cellSize: CGFloat
-    let agentPosition: Position?
-    let agent: QLearningAgent?
+    @ObservedObject var agent: QLearningAgent
     
-    init(maze: MazeGrid, cellSize: CGFloat = 30, agentPosition: Position? = nil, agent: QLearningAgent? = nil) {
+    init(maze: MazeGrid, cellSize: CGFloat = 30, agent: QLearningAgent) {
         self.maze = maze
         self.cellSize = cellSize
-        self.agentPosition = agentPosition
         self.agent = agent
     }
     
@@ -27,7 +25,7 @@ struct MazeGridView: View {
                     ForEach(0..<maze.cols, id: \.self) { col in
                         let cellType = maze.grid[row][col]
                         let position = Position(row: row, col: col)
-                        let isAgentHere = agentPosition == position
+                        let isAgentHere = agent.currentPosition == position
                         let trailIndex = getTrailIndex(for: position)
                         
                         ZStack {
@@ -37,7 +35,7 @@ struct MazeGridView: View {
                                 .border(Color(.systemGray5), width: 0.5)
                             
                             // Q-value heatmap overlay
-                            if let agent = agent, maze.isValidPosition(position) && cellType != .goal {
+                            if maze.isValidPosition(position) && cellType != .goal {
                                 let maxQValue = agent.getMaxQValue(for: position)
                                 let heatmapColor = getHeatmapColor(for: maxQValue)
                                 
@@ -62,7 +60,7 @@ struct MazeGridView: View {
                                     .frame(width: cellSize * 0.6, height: cellSize * 0.6)
                                     .shadow(color: Color(.systemRed).opacity(0.5), radius: 4)
                                     .scaleEffect(1.0)
-                                    .animation(.spring(response: 0.3, dampingFraction: 0.6), value: agentPosition)
+                                    .animation(.spring(response: 0.3, dampingFraction: 0.6), value: agent.currentPosition)
                             }
                         }
                     }
@@ -89,12 +87,11 @@ struct MazeGridView: View {
     }
     
     private func getTrailIndex(for position: Position) -> Int? {
-        guard let agent = agent else { return nil }
         return agent.pathHistory.firstIndex(of: position)
     }
 }
 
 #Preview {
-    MazeGridView(maze: MazeGrid(), agentPosition: Position(row: 1, col: 1))
+    MazeGridView(maze: MazeGrid(), agent: QLearningAgent(maze: MazeGrid()))
         .background(Color(.systemBackground))
 } 

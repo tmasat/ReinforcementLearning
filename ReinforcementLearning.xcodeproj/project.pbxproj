@@ -10,9 +10,22 @@
 		6400064B2E070EC900AE8574 /* ReinforcementLearning.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReinforcementLearning.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		640006D72E09562600AE8574 /* Exceptions for "ReinforcementLearning" folder in "ReinforcementLearning" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 6400064A2E070EC900AE8574 /* ReinforcementLearning */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		6400064D2E070EC900AE8574 /* ReinforcementLearning */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				640006D72E09562600AE8574 /* Exceptions for "ReinforcementLearning" folder in "ReinforcementLearning" target */,
+			);
 			path = ReinforcementLearning;
 			sourceTree = "<group>";
 		};
