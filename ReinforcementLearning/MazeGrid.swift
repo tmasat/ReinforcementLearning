@@ -56,6 +56,28 @@ struct MazeGrid {
         createMaze()
     }
     
+    init(from layout: [[Int]]) {
+        self.rows = layout.count
+        self.cols = layout[0].count
+        self.grid = Array(repeating: Array(repeating: .path, count: cols), count: rows)
+        
+        // Convert layout to grid
+        for row in 0..<rows {
+            for col in 0..<cols {
+                switch layout[row][col] {
+                case 0:
+                    grid[row][col] = .path
+                case 1:
+                    grid[row][col] = .wall
+                case 2:
+                    grid[row][col] = .goal
+                default:
+                    grid[row][col] = .path
+                }
+            }
+        }
+    }
+    
     private mutating func createMaze() {
         // Add walls around the perimeter
         for row in 0..<rows {
@@ -107,5 +129,10 @@ struct MazeGrid {
             }
         }
         return Position(row: rows - 2, col: cols - 2)
+    }
+    
+    func getStartPosition() -> Position {
+        // Return top-left path position
+        return Position(row: 1, col: 1)
     }
 } 

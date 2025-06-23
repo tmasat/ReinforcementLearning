@@ -37,14 +37,30 @@ class QLearningAgent: ObservableObject {
     var epsilon: Double = 0.1
     
     private var qTable: [Position: [Action: Double]] = [:]
-    private let maze: MazeGrid
+    private var maze: MazeGrid
     private let hapticFeedback = UIImpactFeedbackGenerator(style: .medium)
     
-    init(maze: MazeGrid, startPosition: Position = Position(row: 1, col: 1)) {
-        self.maze = maze
-        self.currentPosition = startPosition
-        self.pathHistory = [startPosition]
+    init(maze: MazeGrid? = nil) {
+        // Use provided maze or create random maze
+        if let providedMaze = maze {
+            self.maze = providedMaze
+        } else {
+            let randomLayout = MazeLayouts.getRandomMaze()
+            self.maze = MazeGrid(from: randomLayout)
+        }
+        
+        // Initialize with start position from maze
+        self.currentPosition = self.maze.getStartPosition()
+        self.pathHistory = [self.currentPosition]
         hapticFeedback.prepare()
+        initializeQTable()
+    }
+    
+    func loadRandomMaze() {
+        let randomLayout = MazeLayouts.getRandomMaze()
+        self.maze = MazeGrid(from: randomLayout)
+        self.currentPosition = self.maze.getStartPosition()
+        self.pathHistory = [self.currentPosition]
         initializeQTable()
     }
     
@@ -67,7 +83,7 @@ class QLearningAgent: ObservableObject {
     
     func reset() {
         DispatchQueue.main.async {
-            self.currentPosition = Position(row: 1, col: 1)
+            self.currentPosition = self.maze.getStartPosition()
             self.episodeCount = 0
             self.totalReward = 0
             self.averageReward = 0
@@ -172,7 +188,7 @@ class QLearningAgent: ObservableObject {
             DispatchQueue.main.async {
                 self.episodeCount += 1
                 self.averageReward = self.totalReward / Double(self.episodeCount)
-                self.currentPosition = Position(row: 1, col: 1) // Reset to start
+                self.currentPosition = self.maze.getStartPosition() // Reset to start
                 self.pathHistory = [self.currentPosition]
                 self.stepsInCurrentEpisode = 0
             }
@@ -180,5 +196,10 @@ class QLearningAgent: ObservableObject {
         }
         
         return false
+    }
+    
+    // Getter for maze (needed by MazeGridView)
+    func getMaze() -> MazeGrid {
+        return maze
     }
 } 

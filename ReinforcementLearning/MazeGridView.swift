@@ -8,18 +8,17 @@
 import SwiftUI
 
 struct MazeGridView: View {
-    let maze: MazeGrid
     let cellSize: CGFloat
     @ObservedObject var agent: QLearningAgent
     
-    init(maze: MazeGrid, cellSize: CGFloat = 30, agent: QLearningAgent) {
-        self.maze = maze
+    init(cellSize: CGFloat = 30, agent: QLearningAgent) {
         self.cellSize = cellSize
         self.agent = agent
     }
     
     var body: some View {
         VStack(spacing: 0) {
+            let maze = agent.getMaze()
             ForEach(0..<maze.rows, id: \.self) { row in
                 HStack(spacing: 0) {
                     ForEach(0..<maze.cols, id: \.self) { col in
@@ -92,6 +91,6 @@ struct MazeGridView: View {
 }
 
 #Preview {
-    MazeGridView(maze: MazeGrid(), agent: QLearningAgent(maze: MazeGrid()))
+    MazeGridView(agent: QLearningAgent())
         .background(Color(.systemBackground))
 } 

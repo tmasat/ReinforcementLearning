@@ -64,7 +64,7 @@ struct SettingsPanel: View {
                                     
                                     Text(String(format: "%.2f", learningRate))
                                         .foregroundStyle(.white)
-                                        .font(.caption)
+                                        .font(.headline)
                                         .monospacedDigit()
                                 }
                                 
@@ -86,7 +86,7 @@ struct SettingsPanel: View {
                                     
                                     Text(String(format: "%.2f", discountFactor))
                                         .foregroundStyle(.white)
-                                        .font(.caption)
+                                        .font(.headline)
                                         .monospacedDigit()
                                 }
                                 
@@ -108,7 +108,7 @@ struct SettingsPanel: View {
                                     
                                     Text(String(format: "%.2f", epsilon))
                                         .foregroundStyle(.white)
-                                        .font(.caption)
+                                        .font(.headline)
                                         .monospacedDigit()
                                 }
                                 

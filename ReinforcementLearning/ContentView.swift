@@ -10,16 +10,13 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var maze = MazeGrid()
     @State private var agent: QLearningAgent
     @State private var timer: Timer?
     @State private var isRunning = false
     @State private var showSettings = false
     
     init() {
-        let maze = MazeGrid()
-        self._maze = State(initialValue: maze)
-        self._agent = State(initialValue: QLearningAgent(maze: maze))
+        self._agent = State(initialValue: QLearningAgent())
     }
     
     var body: some View {
@@ -37,6 +34,18 @@ struct ContentView: View {
                         .foregroundStyle(Color(.label))
                     
                     Spacer()
+                    
+                    // Random maze button
+                    Button(action: {
+                        agent.loadRandomMaze()
+                    }) {
+                        Image(systemName: "shuffle")
+                            .font(.title2)
+                            .foregroundStyle(Color(.label))
+                            .padding(8)
+                            .background(Color(.systemGray5))
+                            .cornerRadius(8)
+                    }
                     
                     // Settings button
                     Button(action: {
@@ -57,10 +66,19 @@ struct ContentView: View {
                 
                 Spacer()
                 
-                MazeGridView(maze: maze, cellSize: 25, agent: agent)
+                MazeGridView(cellSize: 25, agent: agent)
                     .padding()
                 
                 Spacer()
+                
+                // Metrics HUD
+                VStack {
+                    HStack {
+                        MetricsHUD(agent: agent)
+                        Spacer()
+                    }
+                    Spacer()
+                }
                 
                 // Control button
                 Button(action: toggleSimulation) {
@@ -73,15 +91,6 @@ struct ContentView: View {
                         .cornerRadius(10)
                 }
                 .padding(.bottom)
-            }
-            
-            // Metrics HUD
-            VStack {
-                HStack {
-                    MetricsHUD(agent: agent)
-                    Spacer()
-                }
-                Spacer()
             }
             
             // Settings panel
