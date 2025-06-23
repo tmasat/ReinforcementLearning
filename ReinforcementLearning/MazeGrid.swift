@@ -17,11 +17,11 @@ enum CellType: CaseIterable {
     var color: Color {
         switch self {
         case .wall:
-            return Color.gray
+            return Color(.systemGray4)
         case .path:
-            return Color.black
+            return Color(.systemBackground)
         case .goal:
-            return Color.green
+            return Color(.systemGreen)
         }
     }
 }

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 // MARK: - Actions
 enum Action: CaseIterable {
@@ -37,11 +38,13 @@ class QLearningAgent: ObservableObject {
     
     private var qTable: [Position: [Action: Double]] = [:]
     private let maze: MazeGrid
+    private let hapticFeedback = UIImpactFeedbackGenerator(style: .medium)
     
     init(maze: MazeGrid, startPosition: Position = Position(row: 1, col: 1)) {
         self.maze = maze
         self.currentPosition = startPosition
         self.pathHistory = [startPosition]
+        hapticFeedback.prepare()
         initializeQTable()
     }
     
@@ -63,12 +66,14 @@ class QLearningAgent: ObservableObject {
     }
     
     func reset() {
-        currentPosition = Position(row: 1, col: 1)
-        episodeCount = 0
-        totalReward = 0
-        averageReward = 0
-        pathHistory = [currentPosition]
-        stepsInCurrentEpisode = 0
+        DispatchQueue.main.async {
+            self.currentPosition = Position(row: 1, col: 1)
+            self.episodeCount = 0
+            self.totalReward = 0
+            self.averageReward = 0
+            self.pathHistory = [self.currentPosition]
+            self.stepsInCurrentEpisode = 0
+        }
         initializeQTable()
     }
     
@@ -146,23 +151,31 @@ class QLearningAgent: ObservableObject {
         
         updateQValue(for: currentPosition, action: action, newPosition: newPosition, reward: reward)
         
-        currentPosition = newPosition
-        totalReward += reward
-        stepsInCurrentEpisode += 1
-        
-        // Add to path history (keep last 50 positions for trail effect)
-        pathHistory.append(currentPosition)
-        if pathHistory.count > 50 {
-            pathHistory.removeFirst()
+        // Update all @Published properties on the main thread
+        DispatchQueue.main.async {
+            self.currentPosition = newPosition
+            self.totalReward += reward
+            self.stepsInCurrentEpisode += 1
+            
+            // Add to path history (keep last 50 positions for trail effect)
+            self.pathHistory.append(newPosition)
+            if self.pathHistory.count > 50 {
+                self.pathHistory.removeFirst()
+            }
         }
         
         // Check if episode is complete (reached goal)
-        if maze.getCellType(at: currentPosition) == .goal {
-            episodeCount += 1
-            averageReward = totalReward / Double(episodeCount)
-            currentPosition = Position(row: 1, col: 1) // Reset to start
-            pathHistory = [currentPosition]
-            stepsInCurrentEpisode = 0
+        if maze.getCellType(at: newPosition) == .goal {
+            // Trigger haptic feedback
+            hapticFeedback.impactOccurred()
+            
+            DispatchQueue.main.async {
+                self.episodeCount += 1
+                self.averageReward = self.totalReward / Double(self.episodeCount)
+                self.currentPosition = Position(row: 1, col: 1) // Reset to start
+                self.pathHistory = [self.currentPosition]
+                self.stepsInCurrentEpisode = 0
+            }
             return true
         }
         

@@ -4,6 +4,8 @@
 //
 //  Created by Tugberk Masat on 21.06.2025.
 //
+// Note: For haptic feedback to work, add this key to Info.plist:
+// NSHapticsUsageDescription = "This app uses haptic feedback to provide tactile response when the agent reaches the goal."
 
 import SwiftUI
 
@@ -23,7 +25,7 @@ struct ContentView: View {
     var body: some View {
         ZStack {
             // Full-screen background
-            Color.black
+            Color(.systemBackground)
                 .ignoresSafeArea()
             
             // Maze grid with agent
@@ -32,7 +34,7 @@ struct ContentView: View {
                     Text("Q-Learning Maze Solver")
                         .font(.title2)
                         .fontWeight(.bold)
-                        .foregroundStyle(.white)
+                        .foregroundStyle(Color(.label))
                     
                     Spacer()
                     
@@ -44,9 +46,9 @@ struct ContentView: View {
                     }) {
                         Image(systemName: "slider.horizontal.3")
                             .font(.title2)
-                            .foregroundStyle(.white)
+                            .foregroundStyle(Color(.label))
                             .padding(8)
-                            .background(Color.gray.opacity(0.3))
+                            .background(Color(.systemGray5))
                             .cornerRadius(8)
                     }
                 }
@@ -60,14 +62,6 @@ struct ContentView: View {
                 
                 Spacer()
                 
-                // Metrics HUD
-                VStack {
-                    HStack {
-                        MetricsHUD(agent: agent)
-                        Spacer()
-                    }
-                }
-                
                 // Control button
                 Button(action: toggleSimulation) {
                     Text(isRunning ? "Stop" : "Start")
@@ -75,10 +69,19 @@ struct ContentView: View {
                         .foregroundStyle(.white)
                         .padding()
                         .frame(width: 200) // Sabit genişlik
-                        .background(isRunning ? Color.red : Color.blue)
+                        .background(isRunning ? Color(.systemRed) : Color(.systemBlue))
                         .cornerRadius(10)
                 }
                 .padding(.bottom)
+            }
+            
+            // Metrics HUD
+            VStack {
+                HStack {
+                    MetricsHUD(agent: agent)
+                    Spacer()
+                }
+                Spacer()
             }
             
             // Settings panel

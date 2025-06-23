@@ -156,6 +156,11 @@ struct SettingsPanel: View {
         learningRate = agent.learningRate
         discountFactor = agent.discountFactor
         epsilon = agent.epsilon
+        
+        // Close the settings panel after reset
+        withAnimation(.easeInOut(duration: 0.3)) {
+            isVisible = false
+        }
     }
 }
 

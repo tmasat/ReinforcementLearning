@@ -34,7 +34,7 @@ struct MazeGridView: View {
                             Rectangle()
                                 .fill(cellType.color)
                                 .frame(width: cellSize, height: cellSize)
-                                .border(Color.white.opacity(0.1), width: 0.5)
+                                .border(Color(.systemGray5), width: 0.5)
                             
                             // Q-value heatmap overlay
                             if let agent = agent, maze.isValidPosition(position) && cellType != .goal {
@@ -44,13 +44,13 @@ struct MazeGridView: View {
                                 Rectangle()
                                     .fill(heatmapColor)
                                     .frame(width: cellSize, height: cellSize)
-                                    .opacity(0.3)
+                                    .opacity(0.4)
                             }
                             
                             // Path trail
                             if let trailIndex = trailIndex {
                                 Circle()
-                                    .fill(Color.yellow)
+                                    .fill(Color(.systemYellow))
                                     .frame(width: cellSize * 0.3, height: cellSize * 0.3)
                                     .opacity(0.3 + (0.4 * Double(trailIndex) / 50.0))
                             }
@@ -58,16 +58,18 @@ struct MazeGridView: View {
                             // Agent visualization
                             if isAgentHere {
                                 Circle()
-                                    .fill(Color.red)
+                                    .fill(Color(.systemRed))
                                     .frame(width: cellSize * 0.6, height: cellSize * 0.6)
-                                    .shadow(color: .red.opacity(0.5), radius: 4)
+                                    .shadow(color: Color(.systemRed).opacity(0.5), radius: 4)
+                                    .scaleEffect(1.0)
+                                    .animation(.spring(response: 0.3, dampingFraction: 0.6), value: agentPosition)
                             }
                         }
                     }
                 }
             }
         }
-        .background(Color.black)
+        .background(Color(.systemBackground))
     }
     
     private func getHeatmapColor(for qValue: Double) -> Color {
@@ -94,5 +96,5 @@ struct MazeGridView: View {
 
 #Preview {
     MazeGridView(maze: MazeGrid(), agentPosition: Position(row: 1, col: 1))
-        .background(Color.black)
+        .background(Color(.systemBackground))
 } 
